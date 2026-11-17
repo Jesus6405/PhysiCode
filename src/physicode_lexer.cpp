@@ -23,9 +23,10 @@ Lexer PhysiCodeLexer::make_lexer()
     const std::string ID_CHAR = "(" + LETTER + "|" + DIGIT + "|_)";
 
     // Comentarios
-    const std::string TEXT_CHAR = "(" + LETTER + "|" + DIGIT + "| |\\t|_|\\.|,|;|:|\\+|\\-|\\*|/|\\^|=|<|>|!|&|\\||\\(|\\)|\\[|\\]|\\{|\\}|\"|')";
-    const std::string LINE_COMMENT = "//" + TEXT_CHAR + "*";
-    const std::string BLOCK_COMMENT = "/\\*(" + TEXT_CHAR + "|\\n|\\r)*\\*/";
+    const std::string LINE_CHAR = "(" + LETTER + "|" + DIGIT + "| |\t|_|\\.|,|;|:|\\+|\\-|\\*|/|\\^|=|<|>|!|&|\\||\\(|\\)|\\[|\\]|\\{|\\}|\"|')";
+    const std::string BLOCK_CHAR = "(" + LETTER + "|" + DIGIT + "| |\t|\n|\r|_|\\.|,|;|:|\\+|\\-|/|\\^|=|<|>|!|&|\\||\\(|\\)|\\[|\\]|\\{|\\}|\"|')";
+    const std::string LINE_COMMENT = "//" + LINE_CHAR + "*";
+    const std::string BLOCK_COMMENT = "/\\*" + BLOCK_CHAR + "*\\*/";
     lexer.add_token("COMENTARIO", "(" + LINE_COMMENT + "|" + BLOCK_COMMENT + ")");
 
     // Palabras Reservadas
@@ -79,7 +80,7 @@ Lexer PhysiCodeLexer::make_lexer()
     lexer.add_token("TOKEN_NUMBER", "(" + BASE_NUM + "|" + BASE_NUM + EXP_PART + ")");
 
     // TOKEN_STRING: "([^"\\]|\\.)*"
-    const std::string STR_CHAR = "(" + LETTER + "|" + DIGIT + "| |\\t|_|\\.|,|;|:|\\+|\\-|\\*|/|\\^|=|<|>|!|\\(|\\)|\\[|\\]|\\{|\\})";
+    const std::string STR_CHAR = "(" + LETTER + "|" + DIGIT + "| |\t|_|\\.|,|;|:|\\+|\\-|\\*|/|\\^|=|<|>|!|\\(|\\)|\\[|\\]|\\{|\\})";
     lexer.add_token("TOKEN_STRING", "\"" + STR_CHAR + "*\"");
 
     // TOKEN_OP_REL: ==|!=|<=|>=|<|>
@@ -101,7 +102,7 @@ Lexer PhysiCodeLexer::make_lexer()
     lexer.add_token("TOKEN_ID", ID_START + ID_CHAR + "*");
 
     // IGNORAR: [ \t\n\r]+
-    lexer.add_token("IGNORAR", "( |\\t|\\n|\\r)+");
+    lexer.add_token("IGNORAR", "( |\t|\n|\r)+");
 
     return lexer;
 }

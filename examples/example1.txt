@@ -1,0 +1,13 @@
+// Ejemplo 1: Cinematica y conversion automatica de unidades
+var velocidad [km/h] = 90;
+var tiempo [min] = 20;
+var distancia [km] = velocidad * tiempo;
+
+print "Calculo de distancia recorrida:";
+show distancia;
+
+if (distancia >= 25) {
+    print "Trayecto de larga distancia completado";
+} else {
+    print "Trayecto corto";
+}

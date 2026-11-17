@@ -1,0 +1,10 @@
+/* Ejemplo 2: Dinamica, Segunda Ley de Newton y uso de formula */
+const masa_carro [kg] = 0.5;
+var aceleracion [m/s^2] = 4.25;
+var fuerza_empuje [N] = (masa_carro * aceleracion) to [N];
+show fuerza_empuje;
+
+// Calculo de peso gravitatorio con constante G 
+const masa_objeto [kg] = 70;
+formula peso_terrestre = masa_objeto * G;
+show peso_terrestre to [N];

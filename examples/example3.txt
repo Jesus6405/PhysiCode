@@ -1,0 +1,19 @@
+// Ejemplo 3: Termodinamica, notacion cientifica y ciclos de simulacion
+magnitude Presion;
+unit [Pa];
+
+const energia_limite [J] = 2.5e4;
+var trabajo_acumulado [J] = 0;
+var potencia [W] = 1500;
+var paso_tiempo [s] = 5;
+var iteraciones = 0;
+
+while (trabajo_acumulado < energia_limite && iteraciones != 10) {
+    trabajo_acumulado = trabajo_acumulado + (potencia * paso_tiempo);
+    iteraciones = iteraciones + 1;
+    show trabajo_acumulado;
+}
+
+if (trabajo_acumulado >= energia_limite || iteraciones == 10) {
+    print "Simulacion fisica finalizada con exito";
+}
