@@ -23,6 +23,40 @@ El lenguaje resuelve el problema común de errores en cálculos científicos der
 
 ---
 
+## Analizador Léxico
+
+La primera fase del compilador está implementada sobre la clase `Designar::Lexer` de la biblioteca **DeSiGNAR**. Su función es leer el código fuente de **PhysiCode**, validar cada lexema frente a las expresiones regulares del lenguaje y transformar la entrada en un flujo secuencial de tokens (`DynArray<Designar::Token>`) listo para el análisis sintáctico.
+
+### Categorías de Tokens Reconocidos
+
+| Categoría / Token | Descripción | Ejemplos |
+| :--- | :--- | :--- |
+| **Palabras Reservadas** | Declaración, control de flujo, E/S, conversión y magnitudes (`KW_VAR`, `KW_CONST`, `KW_FORMULA`, `KW_IF`, `KW_ELSE`, `KW_ELIF`, `KW_WHILE`, `KW_FOR`, `KW_INPUT`, `KW_SHOW`, `KW_PRINT`, `KW_TO`, `KW_MAGNITUDE`, `KW_UNIT`) | `var`, `const`, `formula`, `if`, `while`, `show`, `to` |
+| **Constantes y Literales** | Constantes matemáticas/físicas y booleanos (`CONST_PI`, `CONST_EULER`, `CONST_G`, `TOKEN_BOOL`) | `PI`, `EULER`, `G`, `true`, `false` |
+| **Tipos Primitivos** | Tipos de datos base (`TYPE_NUM`, `TYPE_BOOL`, `TYPE_STRING`) | `num`, `bool`, `string` |
+| **`TOKEN_UNIT`** | Unidades físicas encerradas entre corchetes | `[m]`, `[km/h]`, `[m/s^2]`, `[N]` |
+| **`TOKEN_NUMBER`** | Enteros, decimales y notación científica | `21`, `7.51`, `2.5e4`, `2e9` |
+| **`TOKEN_STRING`** | Cadenas de texto delimitadas por comillas dobles | `"Calculo completado"` |
+| **`TOKEN_ID`** | Identificadores de variables, fórmulas y magnitudes | `velocidad`, `masa_carro`, `Presion` |
+| **`TOKEN_OP_ARIT`** | Operadores aritméticos y de potencia | `+`, `-`, `*`, `/`, `^` |
+| **`TOKEN_OP_REL`** | Operadores relacionales de comparación | `==`, `!=`, `<=`, `>=`, `<`, `>` |
+| **`TOKEN_OP_LOGIC`** | Operadores lógicos | `&&`, \|\|, `!` |
+| **`TOKEN_ASIGN`** | Operador de asignación | `=` |
+| **`TOKEN_DELIM`** | Delimitadores y signos de puntuación | `;`, `(`, `)`, `{`, `}`, `,` |
+| **`COMENTARIO`** | Comentarios de línea y de bloque *(filtrados antes del parser)* | `// ...`, `/* ... */` |
+| **`IGNORAR`** | Espacios en blanco, tabulaciones y saltos de línea *(filtrados antes del parser)* | `' '`, `\t`, `\n`, `\r` |
+
+### Decisiones de Diseño y Prioridad Léxica
+
+- **Compatibilidad con el motor de DeSiGNAR:** Las expresiones regulares se construyen mediante bloques explícitos de unión, concatenación y cerraduras compatibles con los autómatas finitos generados por **DeSiGNAR**.
+- **Jerarquía de registro:** El orden en que se añaden las reglas dentro de `make_lexer()` resuelve ambigüedades léxicas:
+  1. **`COMENTARIO` antes de `TOKEN_OP_ARIT`:** Evita que los inicios de comentario `//` o `/*` sean interpretados como el operador de división `/`.
+  2. **Palabras reservadas y constantes antes de `TOKEN_ID`:** Asegura que lexemas como `var`, `formula` o `G` se clasifiquen con su token específico y no como identificadores genéricos.
+  3. **Operadores compuestos antes de simples:** Los operadores de dos caracteres (`==`, `!=`, `<=`, `>=`, `&&`, `||`) tienen precedencia sobre `=` y `!`.
+- **Depuración del flujo de salida:** Las funciones de tokenización descartan automáticamente los tokens `IGNORAR` y `COMENTARIO`, entregando únicamente los tokens sintácticamente relevantes.
+
+---
+
 ## Estructura del Proyecto
 
 ```text
